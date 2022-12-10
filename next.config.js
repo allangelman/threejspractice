@@ -6,6 +6,8 @@ const nextConfig = {
     loader: "akamai",
     path: "",
   },
+  basePath: "/threejspractice",
+  assetPrefix: "/threejspractice",
 };
 
 module.exports = nextConfig;
