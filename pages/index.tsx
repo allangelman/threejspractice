@@ -1,8 +1,11 @@
 import Head from "next/head";
 import { Canvas } from "@react-three/fiber";
 import { Geometry } from "../components/Geo";
+import { useState } from "react";
+import { MatCapButton } from "../components/MatCapButton";
 
 export default function Home() {
+  const [selectedMaterial, setSelectedMaterial] = useState<string>("default");
   return (
     <>
       <Head>
@@ -11,16 +14,24 @@ export default function Home() {
         <link rel="icon" href="/threejspractice/favicon.ico" />
       </Head>
       <div className="px-4 md:px-12 lg:mx-auto lg:max-w-[1184px] h-full">
-        <div className="text-5xl grow whitespace-nowrap max-md:text-3xl mb-8 max-md:pb-4">
-          three.js practice
-        </div>
-        <div className="w-full h-[600px] mx-auto my-auto bg-black">
-          <Canvas
-            camera={{ fov: 50, position: [1, 5, 5] }}
-            className="bg-green-500"
-          >
-            <Geometry />
-          </Canvas>
+        <div className="h-8"></div>
+        <div className="flex flex-row space-x-3">
+          <div className="w-[900px] h-[600px] my-auto bg-black">
+            <Canvas camera={{ fov: 50, position: [0, 2, 5] }} className="">
+              <Geometry selectedMaterial={selectedMaterial} />
+            </Canvas>
+          </div>
+          <div className="flex flex-col space-y-2">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((number) => {
+              return (
+                <MatCapButton
+                  key={number}
+                  name={`matcap${number}`}
+                  onClick={() => setSelectedMaterial(`${number}.png`)}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
     </>

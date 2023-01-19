@@ -1,9 +1,13 @@
-import { ReactElement, useRef, useState } from "react";
+import { ReactElement, Suspense, useRef, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { PointLight, Scene } from "three";
+import { DoubleSide, Euler, PointLight, Vector3 } from "three";
+import { Loading, Model } from "./Model";
 
-export const Geometry = (): ReactElement => {
+interface GeometryProps {
+  selectedMaterial: string;
+}
+export const Geometry = ({ selectedMaterial }: GeometryProps): ReactElement => {
   const { scene, camera, gl } = useThree();
   const controls = new OrbitControls(camera, gl.domElement);
   const pointLightRef = useRef<PointLight>(null);
@@ -33,14 +37,18 @@ export const Geometry = (): ReactElement => {
 
   return (
     <>
-      <pointLight ref={pointLightRef} position={[-5, -4, 10]} />
-      <mesh
-        position={[boxPosition.x, boxPosition.y, boxPosition.z]}
-        // rotation={[boxPosition.x, boxPosition.y, boxPosition.z]}
+      <pointLight ref={pointLightRef} position={[-5, 4, 10]} />
+      {/* <mesh
+        position={[0, 0, 0]}
+        scale={[10, 10, 10]}
+        rotation={new Euler(-Math.PI / 2, 0)}
       >
-        <boxGeometry />
-        <meshStandardMaterial color="hotpink" />
-      </mesh>
+        <planeGeometry />
+        <meshStandardMaterial color="hotpink" side={DoubleSide} />
+      </mesh> */}
+      <Suspense fallback={<Loading />}>
+        <Model selectedMaterial={selectedMaterial} />
+      </Suspense>
     </>
   );
 };
