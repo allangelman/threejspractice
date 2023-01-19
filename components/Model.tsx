@@ -1,7 +1,5 @@
-import { ReactElement, useEffect, useMemo, useState } from "react";
-import { useLoader, useThree } from "@react-three/fiber";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
+import { ReactElement, useEffect, useMemo } from "react";
+import { useThree } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import {
   Mesh,
@@ -15,20 +13,10 @@ interface GeometryProps {
   selectedMaterial: string;
 }
 export const Model = ({ selectedMaterial }: GeometryProps): ReactElement => {
-  // const model = useLoader(
-  //   GLTFLoader,
-  //   "./threejspractice/glTF/FlightHelmet.gltf",
-  //   (loader) => {
-  //     const dracoLoader = new DRACOLoader();
-  //     dracoLoader.setDecoderConfig("./draco/");
-  //     loader.setDRACOLoader(dracoLoader);
-  //   }
-  // );
   const gltf = useGLTF("./threejspractice/glTF/FlightHelmet.gltf");
   console.log(gltf);
   const textureLoader = useMemo(() => new TextureLoader(), []);
   const { scene } = useThree();
-  // console.log(scene);
 
   useEffect(() => {
     if (selectedMaterial === "default") return;
