@@ -46,6 +46,7 @@ export const Geometry = ({ selectedMaterial }: GeometryProps): ReactElement => {
         <planeGeometry />
         <meshStandardMaterial color="hotpink" side={DoubleSide} />
       </mesh> */}
+
       <Suspense fallback={<Loading />}>
         <Model selectedMaterial={selectedMaterial} />
       </Suspense>
