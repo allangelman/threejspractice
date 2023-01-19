@@ -13,7 +13,7 @@ interface GeometryProps {
   selectedMaterial: string;
 }
 export const Model = ({ selectedMaterial }: GeometryProps): ReactElement => {
-  const gltf = useGLTF("./threejspractice/glTF/FlightHelmet.gltf");
+  const gltf = useGLTF("./threejspractice/glTF/banana.glb");
   console.log(gltf);
   const textureLoader = useMemo(() => new TextureLoader(), []);
   const { scene } = useThree();
