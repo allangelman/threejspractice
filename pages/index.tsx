@@ -26,7 +26,6 @@ export default function Home() {
           className="h-[800px] bg-slate-700"
         >
           <Geometry
-            selectedMaterial={selectedMaterial}
             points={[
               {
                 elementRef: pointRef,
@@ -39,7 +38,7 @@ export default function Home() {
           ref={pointRef}
           className={cn(
             styles.point,
-            "w-5 h-5 rounded-full absolute top-1/2 left-1/2 bg-black/50"
+            "w-5 h-5 rounded-full absolute top-1/2 left-1/2 bg-black/50 opacity-0"
           )}
         />
       </div>

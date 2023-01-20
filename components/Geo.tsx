@@ -9,14 +9,10 @@ interface point {
   position: Vector3;
 }
 interface GeometryProps {
-  selectedMaterial: string;
   points: point[];
 }
 const raycaster = new Raycaster();
-export const Geometry = ({
-  selectedMaterial,
-  points,
-}: GeometryProps): ReactElement => {
+export const Geometry = ({ points }: GeometryProps): ReactElement => {
   const { scene, camera, gl } = useThree();
   const controls = new OrbitControls(camera, gl.domElement);
   const pointLightRef = useRef<PointLight>(null);
@@ -26,70 +22,45 @@ export const Geometry = ({
   scene.add(camera);
   if (pointLightRef.current) camera.add(pointLightRef.current);
 
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+
   useFrame(() => {
     controls.update();
+    if (isLoaded) {
+      for (const point of points) {
+        const screenPosition = point.position.clone();
+        screenPosition.project(camera);
 
-    for (const point of points) {
-      const screenPosition = point.position.clone();
-      screenPosition.project(camera);
+        const pointDiv = point.elementRef.current;
+        if (!pointDiv) continue;
 
-      const pointDiv = point.elementRef.current;
-      if (!pointDiv) continue;
+        const translateX = screenPosition.x * 600 * 0.5;
+        const translateY = -screenPosition.y * 600 * 0.5;
 
-      // pointDiv.style.transition = "scale 0.3s";
-      // pointDiv.style.transition = "scale 0.3s";
-      // pointDiv.style.transition = "opacity 0.3s";
-      const translateX = screenPosition.x * 600 * 0.5;
-      const translateY = -screenPosition.y * 600 * 0.5;
-
-      pointDiv.style.transform = `translateX(${translateX}px) translateY(${translateY}px) scale(1, 1)`;
-      pointDiv.style.scale = `scale(1, 1)`;
-      pointDiv.style.opacity = "100%";
-
-      raycaster.setFromCamera(screenPosition, camera);
-      const intersects = raycaster.intersectObjects(scene.children, true);
-      console.log(intersects, scene.children);
-      if (intersects.length === 0) {
-        continue;
-      }
-
-      const intersectionDistance = intersects[0].distance;
-      const pointDistance = point.position.distanceTo(camera.position);
-
-      if (intersectionDistance < pointDistance) {
-        pointDiv.style.transform = `translateX(${translateX}px) translateY(${translateY}px) scale(0.5, 0.5)`;
-        pointDiv.style.scale = `scale(0.2, 0.2)`;
-        pointDiv.style.opacity = "20%";
-      } else {
         pointDiv.style.transform = `translateX(${translateX}px) translateY(${translateY}px) scale(1, 1)`;
         pointDiv.style.scale = `scale(1, 1)`;
         pointDiv.style.opacity = "100%";
-      }
 
-      // if (intersects.length === 0) {
-      //   // pointDiv.style.scale = "1";
-      //   pointDiv.style.transform = `translateX(${translateX}px) translateY(${translateY}px) scale(1, 1)`;
-      //   // pointDiv.style.transform = "scale(1,1)";
-      //   // scale = "(1,1)";
-      //   // pointDiv.style.opacity = "100%";
-      // } else {
-      //   const intersectionDistance = intersects[0].distance;
-      //   const pointDistance = point.position.distanceTo(camera.position);
-      //   if (intersectionDistance < pointDistance) {
-      //     // pointDiv.style.scale = "0.2";
-      //     pointDiv.style.transform = `translateX(${translateX}px) translateY(${translateY}px) scale(0.2, 0.2)`;
-      //     // pointDiv.style.transition = "scale 0.1s";
-      //     // pointDiv.style.transform = "scale(0,0)";
-      //     // scale = "(0,0)";
-      //     // pointDiv.style.opacity = "50%";
-      //   } else {
-      //     // pointDiv.style.scale = "1";
-      //     pointDiv.style.transform = `translateX(${translateX}px) translateY(${translateY}px) scale(1, 1)`;
-      //     // pointDiv.style.transform = "scale(1,1)";
-      //     // scale = "(1,1)";
-      //     // pointDiv.style.opacity = "100%";
-      //   }
-      // }
+        raycaster.setFromCamera(screenPosition, camera);
+        const intersects = raycaster.intersectObjects(scene.children, true);
+        console.log(intersects, scene.children);
+        if (intersects.length === 0) {
+          continue;
+        }
+
+        const intersectionDistance = intersects[0].distance;
+        const pointDistance = point.position.distanceTo(camera.position);
+
+        if (intersectionDistance < pointDistance) {
+          pointDiv.style.transform = `translateX(${translateX}px) translateY(${translateY}px) scale(0.5, 0.5)`;
+          pointDiv.style.scale = `scale(0.2, 0.2)`;
+          pointDiv.style.opacity = "20%";
+        } else {
+          pointDiv.style.transform = `translateX(${translateX}px) translateY(${translateY}px) scale(1, 1)`;
+          pointDiv.style.scale = `scale(1, 1)`;
+          pointDiv.style.opacity = "100%";
+        }
+      }
     }
   });
 
@@ -98,7 +69,7 @@ export const Geometry = ({
       <pointLight ref={pointLightRef} position={[-5, 4, 10]} />
 
       <Suspense fallback={<LoadingSkeleton />}>
-        <Model selectedMaterial={selectedMaterial} />
+        <Model setIsLoaded={setIsLoaded} />
       </Suspense>
     </>
   );
