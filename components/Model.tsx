@@ -1,5 +1,5 @@
 import { ReactElement, useEffect, useMemo } from "react";
-import { useThree } from "@react-three/fiber";
+import { useThree, useLoader } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import {
   Mesh,
@@ -8,13 +8,15 @@ import {
   PlaneGeometry,
   TextureLoader,
 } from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
 interface GeometryProps {
   selectedMaterial: string;
 }
 export const Model = ({ selectedMaterial }: GeometryProps): ReactElement => {
-  const gltf = useGLTF("./threejspractice/glTF/banana.glb");
-  console.log(gltf);
+  const gltf = useGLTF("./threejspractice/glTF/totoro.glb");
+
   const textureLoader = useMemo(() => new TextureLoader(), []);
   const { scene } = useThree();
 
@@ -28,11 +30,15 @@ export const Model = ({ selectedMaterial }: GeometryProps): ReactElement => {
   }, [scene, selectedMaterial, textureLoader]);
 
   return (
-    <primitive object={gltf.scene} scale={[2, 2, 2]} position={[0, 0, 0]} />
+    <primitive
+      object={gltf.scene}
+      scale={[0.1, 0.1, 0.1]}
+      position={[0, -1.0, 0]}
+    />
   );
 };
 
-export const Loading = (): ReactElement => {
+export const LoadingSkeleton = (): ReactElement => {
   return (
     <mesh scale={[1, 3, 1]} position={[0, 0, 0]}>
       <boxGeometry args={[1, 1, 1, 2, 2, 2]} />
